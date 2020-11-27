@@ -13,7 +13,8 @@ import Link from "@material-ui/core/Link";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import UseDataApi from "../hooks/UseDataApi";
 
-const API_URL = 'http://www.7timer.info/bin/api.pl?lon=113.17&lat=23.09&product=astro&output=json';
+const API_URL =
+  "http://www.7timer.info/bin/api.pl?lon=113.17&lat=23.09&product=astro&output=json";
 
 function preventDefault(event) {
   event.preventDefault();
@@ -46,61 +47,58 @@ export default function WeatherWidget(props) {
   const classes = useStyles();
   const [dataState] = UseDataApi(API_URL);
 
-  const { data, isFethcing } = dataState;
-  console.log(data);
-
-  if(!isFethcing && data.message) {
+  const { data, isFethcing, isError, errorMessage } = dataState;
+  // console.log(data);
+  // console.log(isFethcing);
+  if (isError) {
     return (
-    <Card className={classes.root}>
-      <CardHeader
-        action={
-          <IconButton aria-label="settings">
-          </IconButton>
-        }
-        title={data.name}
-        subheader={data.message}
-      />
-      <CardContent>
-
-      </CardContent>
-    </Card>
-    )
+      <Card className={classes.root}>
+        <CardHeader
+          action={<IconButton aria-label="settings" />}
+          title={errorMessage.name}
+          subheader={errorMessage.message}
+        />
+        <CardContent />
+      </Card>
+    );
   }
 
   return (
     <Card className={classes.root}>
-      {isFethcing ? <p>Fetching data...</p> :
-      <>
-      <CardHeader
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title="Bekasi, West Java"
-        subheader={data.init}
-      />
-      <CardMedia
-        className={classes.media}
-        image="/static/images/cards/paella.jpg"
-        title="Paella dish"
-      />
-      <CardContent>
-        <Grid container spacing={1}>
-          {data.map(row => (
-            <Grid item xs>
-              <Paper className={classes.paper}>xs</Paper>
+      {isFethcing ? (
+        <p>Fetching data...</p>
+      ) : (
+        <>
+          <CardHeader
+            action={
+              <IconButton aria-label="settings">
+                <MoreVertIcon />
+              </IconButton>
+            }
+            title="Bekasi, West Java"
+            subheader={data.init}
+          />
+          <CardMedia
+            className={classes.media}
+            image="/static/images/cards/paella.jpg"
+            title="Paella dish"
+          />
+          <CardContent>
+            <Grid container spacing={1}>
+              {data.map(row => (
+                <Grid item xs>
+                  <Paper className={classes.paper}>xs</Paper>
+                </Grid>
+              ))}
             </Grid>
-          ))}
-        </Grid>
-      </CardContent>
-      <CardActions disableSpacing>
-        <Link color="primary" href="#" onClick={preventDefault}>
-          Data from BMKG | Updated 7 minutes ago
-        </Link>
-      </CardActions>
-      </>
-      }
+          </CardContent>
+          <CardActions disableSpacing>
+            <Link color="primary" href="#" onClick={preventDefault}>
+              Data from BMKG | Updated 7 minutes ago
+            </Link>
+          </CardActions>
+        </>
+      )}
     </Card>
   );
 }
